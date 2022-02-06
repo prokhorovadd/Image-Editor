@@ -79,8 +79,6 @@ class Controller {
     fun initialize(){
         OpenCV.loadLocally()
 
-        // Можно добавлять к нодам эффектов все необходимые ноды (?)
-
 
         floatNodeButton.setOnAction { addNode(FloatValue(node, link, scene.getId())) }
         intNodeButton.setOnAction{ addNode(IntValue(node, link, scene.getId())) }
@@ -98,6 +96,31 @@ class Controller {
         rotateNodeButton.setOnAction{ addNode(Rotation(node, link, scene.getId())) }
         addNode(StartNode(node, link, scene.getId()))
         addNode(EndNode(node, link, scene.getId()).also { it.layoutX = 700.0 })
+
+        saveSceneButton.setOnAction {
+            val json = scene.save()
+            val fileChooser = FileChooser()
+            val extensionFilter = FileChooser.ExtensionFilter("JSON files (*.json)", "*.json")
+            fileChooser.extensionFilters.add(extensionFilter)
+            var file = fileChooser.showSaveDialog(sceneContainer.scene.window as Stage)
+            if (file.nameWithoutExtension == file.name) { file = File(file.parentFile, file.nameWithoutExtension + ".json") }
+            file.writeText(json)
+        }
+
+        loadSceneButton.setOnAction {
+            val fileChooser = FileChooser()
+            val extensionFilter = FileChooser.ExtensionFilter("JSON files (*.json)", "*.json")
+            fileChooser.extensionFilters.add(extensionFilter)
+            val file = fileChooser.showOpenDialog(sceneContainer.scene.window as Stage)
+            val json = file.readText()
+            scene = scene.load(json)
+            clearScene()
+            val nodesIterator = scene.nodes.iterator()
+            for(node in nodesIterator) {
+                sceneContainer.children.add(node)
+            }
+            loadLinks()
+        }
 
     }
     private fun clearScene() { sceneContainer.children.clear() }

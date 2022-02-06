@@ -127,9 +127,6 @@ abstract class Node<T>(private val nodeState: DataFormat, private val linkState:
         superParent!!.children.remove(link)
         link.isConnected = false
         link.unbindEnd()
-//        link.destination?.connectedLink = null
-//        link.destination?.valueProperty?.set(link.destination?.defaultValue)
-//        link.destination = null
     }
 
     fun <E> connectLink(
@@ -143,11 +140,6 @@ abstract class Node<T>(private val nodeState: DataFormat, private val linkState:
         linkDestination.valueProperty.set(connectedLink.valueProperty.value)
         linkDestination.connectedLink = connectedLink
         connectedLinks.add(connectedLink)
-
-//        val content = ClipboardContent()
-//
-//        content[linkState] = "link"
-//        startDragAndDrop(*TransferMode.ANY).setContent(content)
     }
 
     fun <E> loadLink(
